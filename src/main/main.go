@@ -10,11 +10,15 @@ import (
 	"strings"
 )
 
-func deposit(a *bank.Account,b int){
-a.Balance+=b
-fmt.Println(a.Balance)
+func deposit(a *bank.Account, b int) {
+	a.Balance += b
+	fmt.Println(a.Balance)
 }
 
+func withdraw(a *bank.Account, b int) {
+	a.Balance -= b
+	fmt.Println(a.Balance)
+}
 func main() {
 	//선택
 	var selnum int
@@ -85,27 +89,58 @@ func main() {
 		case 3:
 			var num string
 			var bal int
+			ok := false
 			fmt.Println("=========")
 			fmt.Println("예금")
 			fmt.Println("=========")
 			fmt.Printf("계좌번호(000-000): ")
 			fmt.Scanf("%s", &num)
 			fmt.Printf("예금액 : ")
-			fmt.Scanf("%d",&bal)
-			
+			fmt.Scanf("%d", &bal)
 
-			for i,account :=range accounts{
-				if account.Num==num{
-					deposit(&accounts[i],bal)
-					fmt.Println("결과 : 예금이 성공되었습니다.")
-					break
+			for i, account := range accounts {
+				if account.Num == num {
+					deposit(&accounts[i], bal)
+					ok = true
 				}
 			}
-			fmt.Println("해당 계좌가 없습니다")
-
+			if ok {
+				fmt.Println("결과: 예금이 성공하였습니다")
+			} else {
+				fmt.Println("계좌번호를 찾지 못하였습니다.")
+			}
 
 		case 4:
-			fmt.Println("4번")
+			var num string
+			var bal int
+			ok := false
+			fmt.Println("=========")
+			fmt.Println("출금")
+			fmt.Println("=========")
+			fmt.Printf("계좌번호(000-000): ")
+			fmt.Scanf("%s", &num)
+			for i, account := range accounts {
+				if account.Num == num {
+					fmt.Println("현재 잔고 : ", account.Balance)
+
+					fmt.Printf("출금액 : ")
+					fmt.Scanf("%d", &bal)
+					if account.Balance < bal {
+						fmt.Println("잔액이 부족합니다")
+						ok=false
+					} else {
+						withdraw(&accounts[i], bal)
+						ok=true
+					}
+				}
+			}
+			if !ok {
+				fmt.Println("결과 : 출금에 실패하였습니다")
+				return
+			} else {
+				fmt.Println("결과 : 출금을 성공했습니다")
+			}
+
 		case 5:
 			os.Exit(0)
 		default:
